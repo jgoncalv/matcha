@@ -1,8 +1,12 @@
 import React from 'react';
+import axios from 'axios';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+// TODO: Add env var when ready
+axios.defaults.baseURL = 'http://localhost:3000/api';
 
 ReactDOM.render(
   <React.StrictMode>
