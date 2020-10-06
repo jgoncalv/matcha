@@ -32,7 +32,6 @@ exports.login = async (req, res) => {
 exports.register = async (req, res) => {
   const { email, username, password, name, first_name } = req.body;
 
-  console.log('hello', req);
   try {
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(password, salt);
@@ -51,3 +50,18 @@ exports.register = async (req, res) => {
     res.status(400).send();
   }
 };
+
+exports.getUserProfil = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const [data] = await knex('users')
+      .select(['username', 'name', 'first_name', 'gender', 'biography'])
+      .where({ username });
+
+    res.json(data);
+  } catch (e) {
+    consola.error(e);
+    res.status(400).send();
+  }
+}
