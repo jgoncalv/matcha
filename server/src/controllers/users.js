@@ -65,3 +65,43 @@ exports.getUserProfil = async (req, res) => {
     res.status(400).send();
   }
 }
+
+/**
+ * Add an interest for the user and if not created create the new one in the interests table
+ * @param req
+ * @param {string} req.params.username - Username passed in the url
+ * @param {string} req.body.interest - The interest the user want to add
+ * @param res
+ * @returns {Promise<void>}
+ */
+exports.addUserInterest = async (req, res) => {
+  const { username } = req.params;
+  const { interest } = req.body;
+
+  try {
+
+    await knex.transaction(async function(trx) {
+      let interest_id;
+      const [data] = await trx('interests')
+        .select(['id'])
+        .where({ title: interest })
+        .limit(1);
+
+      if (!data) {
+        const [newInterest] = await trx('interests')
+          .insert({ title: interest })
+          .returning(['id'])
+        interest_id = newInterest.id;
+      } else {
+        interest_id = data.id;
+      }
+      await trx('users_interests')
+        .insert({ username, interest_id });
+    })
+
+    res.status(200).send();
+  } catch (e) {
+    consola.error(e);
+    res.status(400).send();
+  }
+};
