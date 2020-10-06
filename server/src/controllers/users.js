@@ -55,9 +55,32 @@ exports.getUserProfil = async (req, res) => {
   const { username } = req.params;
 
   try {
-    const [data] = await knex('users')
-      .select(['username', 'name', 'first_name', 'gender', 'biography'])
-      .where({ username });
+    const data = await knex.transaction(async function(trx) {
+      const interestsPromise = trx('users_interests')
+        .leftJoin('interests', 'users_interests.interest_id', 'interests.id')
+        .select({
+          title: 'interests.title',
+        })
+        .where('users_interests.username', username)
+        .limit(50);
+
+      const profilPromise = trx('users')
+        .select(['username', 'name', 'first_name', 'gender', 'biography'])
+        .where({ username })
+        .limit(1);
+
+      const likeScorePromise = trx('likes')
+        .count()
+        .where({ username });
+
+      const [interests, [profil], score] = await Promise.all([interestsPromise, profilPromise, likeScorePromise]);
+
+      return {
+        ...profil,
+        interests,
+        score: score[0].count,
+      }
+    })
 
     res.json(data);
   } catch (e) {
