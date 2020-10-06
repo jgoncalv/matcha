@@ -3,7 +3,7 @@ const consola = require('consola');
 const knex = require('../database');
 
 /**
- * Like or unlike
+ * Like or unlike increments or decrement the score of the user
  * @param {Object} req
  * @param {boolean} req.body.like - Set Like true or false
  * @param {boolean} req.params.username - This is the user we want to like
@@ -18,18 +18,30 @@ exports.like = async (req, res) => {
 
   try {
     if (like) {
-      await knex('likes')
-        .insert({
-          username,
-          username_liked,
-        })
+
+      await knex.transaction(async function (trx) {
+        await trx('likes')
+          .insert({
+            username,
+            username_liked,
+          });
+        await trx('users')
+          .where({ username })
+          .increment('score', 1 );
+      });
+
     } else {
-      await knex('likes')
+      await knex.transaction(async function(trx) {
+        await trx('likes')
         .where({
           username,
           username_liked,
         })
-        .del()
+        .del();
+        await trx('users')
+          .where({ username })
+          .decrement('score', 1);
+      })
     }
 
     res.status(200).send();
@@ -37,4 +49,4 @@ exports.like = async (req, res) => {
     consola.error(e);
     res.status(400).send();
   }
-}
+};

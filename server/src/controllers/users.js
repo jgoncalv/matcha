@@ -65,20 +65,15 @@ exports.getUserProfil = async (req, res) => {
         .limit(50);
 
       const profilPromise = trx('users')
-        .select(['username', 'name', 'first_name', 'gender', 'biography'])
+        .select(['username', 'name', 'first_name', 'gender', 'biography', 'score'])
         .where({ username })
         .limit(1);
 
-      const likeScorePromise = trx('likes')
-        .count()
-        .where({ username });
-
-      const [interests, [profil], score] = await Promise.all([interestsPromise, profilPromise, likeScorePromise]);
+      const [interests, [profil]] = await Promise.all([interestsPromise, profilPromise]);
 
       return {
-        ...profil,
         interests,
-        score: score[0].count,
+        ...profil,
       }
     })
 
@@ -102,7 +97,6 @@ exports.addUserInterest = async (req, res) => {
   const { interest } = req.body;
 
   try {
-
     await knex.transaction(async function(trx) {
       let interest_id;
       const [data] = await trx('interests')
