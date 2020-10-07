@@ -84,7 +84,6 @@ export default () => {
         color="primary"
         className={classes.submit}
         onClick={async () => {
-          console.log({ username, password });
           setErrorMsg('');
           if (!username || !password) {
             setErrorMsg('Please fill the inputs');
@@ -93,7 +92,8 @@ export default () => {
 
           setLoading(true);
           try {
-            await sdk.auth.login({ username, password });
+            const {data: token } = await sdk.auth.login({ username, password });
+            sdk.setToken(token);
             history.push('/');
             setLoading(false);
           } catch (e) {
