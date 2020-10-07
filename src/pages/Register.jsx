@@ -9,6 +9,7 @@ import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import sdk from '../sdk';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   submit: {
@@ -154,7 +155,9 @@ export default () => {
         variant="contained"
         color="primary"
         className={classes.submit}
+        disabled={loading}
         onClick={async () => {
+          setErrorMsg('');
           if (!firstName || !name || !email || !username || !password || !confirmPassword) {
             setErrorMsg('Fill all the inputs');
             return ;
@@ -182,7 +185,11 @@ export default () => {
           }
         }}
       >
-        Sign Up
+        {
+          loading ?
+          <CircularProgress color="secondary"/> :
+          'Sign Up'
+        }
       </Button>
       <Grid item xs={12}>
         {errorMsg}
