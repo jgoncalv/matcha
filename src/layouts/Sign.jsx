@@ -5,13 +5,11 @@ import {
   Route,
 } from "react-router-dom";
 import { Grid } from '@material-ui/core';
-import { Login } from '../pages/Login';
-import { Register } from '../pages/Register';
-import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
+import Login from '../pages/Login';
+import Register from '../pages/Register';
+import RegisterConfirmation from '../pages/RegisterConfirmation';
 import Paper from '@material-ui/core/Paper';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Sign = () => {
+export default () => {
   const classes = useStyles();
   return <Grid container component="main" className={classes.root}>
     <CssBaseline />
@@ -37,11 +35,14 @@ export const Sign = () => {
     <Router>
       <div>
         <Switch>
-          <Route path="/login">
+          <Route exact path="/login">
             <Login />
           </Route>
-          <Route path="/register">
+          <Route exact path="/register">
             <Register />
+          </Route>
+          <Route exact path="/register/confirm">
+            <RegisterConfirmation />
           </Route>
         </Switch>
       </div>

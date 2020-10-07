@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Login = () => {
+export default () => {
   const classes = useStyles();
 
   return <div className={classes.paper}>

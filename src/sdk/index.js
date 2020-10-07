@@ -1,1 +1,7 @@
-export * as auth from './auth';
+import * as auth from './auth';
+
+const def = {
+  auth,
+}
+
+export default def;
