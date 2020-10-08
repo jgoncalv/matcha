@@ -1,8 +1,9 @@
 const consola = require('consola');
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
 
 const knex = require('../database');
-const { createJWT } = require('../helpers/token');
+const { createJWT, verifyJWT } = require('../helpers/token');
 
 exports.login = async (req, res) => {
   const { username, password } = req.body;
@@ -18,6 +19,10 @@ exports.login = async (req, res) => {
 
     if (!bcrypt.compareSync(password, data.password)) {
       throw new Error('Bad password');
+    }
+
+    if (!data.confirmed_email) {
+      throw new Error('Please confirm your email to login');
     }
 
     const token = await createJWT({ username });
@@ -44,7 +49,32 @@ exports.register = async (req, res) => {
         first_name,
       });
 
-    res.status(200).send();
+    // Create a verification token for this user
+    const token = await createJWT({ email });
+
+    // Send the mail
+    var transporter = nodemailer.createTransport({ port: 587, host: 'localhost', secure: false, auth: { user: "username", pass: "password" } });
+    var mailOptions = { from: 'no-reply@yopmail.com', to: email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n' };
+    transporter.sendMail(mailOptions)
+    res.status(200).send('A verification email has been sent to ' + email + '.');
+
+  } catch (e) {
+    consola.error(e);
+    res.status(400).send();
+  }
+};
+
+exports.confirmation = async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const { user: { email } } = verifyJWT(token)
+
+    await knex('users')
+    .where({ email: email})
+    .update({confirmed_email: true});
+
+    return res.redirect('http://localhost:3000/login')
   } catch (e) {
     consola.error(e);
     res.status(400).send();
