@@ -3,7 +3,7 @@ import axios from 'axios';
 /**
  * Log the user
  * @param {Object} data
- * @param {string} data.email
+ * @param {string} data.username
  * @param {string} data.password -
  * @returns {Promise<AxiosResponse<any>>}
  */
