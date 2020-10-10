@@ -18,3 +18,16 @@ export function suggestedUsers({ username }) {
   return axios.get(`/user/${username}/suggestions`);
 };
 
+/**
+ * Update the user
+ * @param {Object} data
+ * @param {string} data.email
+ * @param {string} data.password
+ * @param {string} data.username
+ * @param {string} data.first_name
+ * @param {string} data.name
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export function update(data) {
+  return axios.post('/user/update', data);
+};
