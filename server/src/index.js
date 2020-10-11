@@ -1,6 +1,8 @@
 require('dotenv').config();
 const consola = require('consola');
 const express = require('express');
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cors = require('cors');
