@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as auth from './auth';
+import * as user from './user';
 
 /**
  * Set the axios token
@@ -12,6 +13,7 @@ function setToken(token) {
 const def = {
   auth,
   setToken,
+  user,
 }
 
 export default def;

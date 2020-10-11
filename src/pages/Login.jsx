@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { userLogin } from '../store/src/user'
+import AlreadyConnected from '../components/AlreadyConnected';
 
 const useStyles = makeStyles((theme) => ({
   submit: {
@@ -33,10 +34,16 @@ export default () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
+  const isConnected = useSelector(state => state.user.isConnected);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+
+  if (isConnected) {
+    return <AlreadyConnected />
+  }
 
 
   const onSubmitClick = async () => {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -7,9 +8,10 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import sdk from '../sdk';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import AlreadyConnected from '../components/AlreadyConnected';
 
 const useStyles = makeStyles((theme) => ({
   submit: {
@@ -30,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
   const classes = useStyles();
   const history = useHistory();
+  const isConnected = useSelector(state => state.user.isConnected);
   const [ firstName, setFirstName ] = useState('');
   const [ name, setName ] = useState('');
   const [ email, setEmail ] = useState('');
@@ -38,6 +41,10 @@ export default () => {
   const [ confirmPassword, setConfirmPassword ] = useState('');
   const [ errorMsg, setErrorMsg ] = useState('');
   const [ loading, setLoading ] = useState(false);
+
+  if (isConnected) {
+    return <AlreadyConnected />
+  }
 
   return <div className={classes.paper}>
     <Avatar className={classes.avatar}>
