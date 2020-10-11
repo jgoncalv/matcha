@@ -9,6 +9,7 @@ import sdk from './sdk';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import Profile from './pages/Profile';
 import RegisterConfirmation from './pages/RegisterConfirmation';
 import jwt from 'jsonwebtoken';
 
@@ -42,6 +43,7 @@ function App() {
             <RouteWrapper exact path="/register" component={Register} layout={Sign} />
             <RouteWrapper exact path="/register/confirm" component={RegisterConfirmation} layout={Sign} />
             <RouteWrapper exact path="/" component={Home} layout={Default} />
+            <RouteWrapper exact path="/profile" component={Profile} layout={Default} />
           </Switch>
         </div>
       </Router>
