@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import RegisterConfirmation from './pages/RegisterConfirmation';
+import jwt from 'jsonwebtoken';
 
 function RouteWrapper({component: Component, layout: Layout, ...rest}) {
   return (
@@ -28,7 +29,7 @@ function App() {
     const token = localStorage.getItem('token');
     if (token) {
       sdk.setToken(token);
-      dispatch(setUserConnected());
+      dispatch(setUserConnected(jwt.decode(token)));
     }
   }, []);
 

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { Link, useHistory } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
@@ -12,7 +12,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { userLogin } from '../store/src/user'
-import AlreadyConnected from '../components/AlreadyConnected';
 
 const useStyles = makeStyles((theme) => ({
   submit: {
@@ -34,16 +33,10 @@ export default () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
-  const isConnected = useSelector(state => state.user.isConnected);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
-
-
-  if (isConnected) {
-    return <AlreadyConnected />
-  }
 
 
   const onSubmitClick = async () => {
