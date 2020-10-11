@@ -72,6 +72,12 @@ export const SecondaryListItems = () => {
       </ListItemIcon>
       <ListItemText primary="Profil"/>
     </ListItem>
+    <ListItem button onClick={() => history.push('/settings')}>
+      <ListItemIcon>
+        <AccountBoxIcon/>
+      </ListItemIcon>
+      <ListItemText primary="Paramètres"/>
+    </ListItem>
     <ListItem button>
       <ListItemIcon>
         <ExitToAppIcon/>

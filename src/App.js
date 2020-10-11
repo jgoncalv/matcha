@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import jwt from 'jsonwebtoken';
 
 import Sign from './layouts/Sign';
 import Default from './layouts/Default';
@@ -11,7 +12,7 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import RegisterConfirmation from './pages/RegisterConfirmation';
-import jwt from 'jsonwebtoken';
+import Settings from './pages/Settings';
 
 function RouteWrapper({component: Component, layout: Layout, ...rest}) {
   return (
@@ -44,6 +45,7 @@ function App() {
             <RouteWrapper exact path="/register/confirm" component={RegisterConfirmation} layout={Sign} />
             <RouteWrapper exact path="/" component={Home} layout={Default} />
             <RouteWrapper exact path="/profile" component={Profile} layout={Default} />
+            <RouteWrapper exact path="/settings" component={Settings} layout={Default} />
           </Switch>
         </div>
       </Router>

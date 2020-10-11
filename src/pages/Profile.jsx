@@ -65,14 +65,11 @@ export default () => {
   const history = useHistory();
   const [ firstName, setFirstName ] = useState(data.firstName);
   const [ name, setName ] = useState(data.name);
-  const [ email, setEmail ] = useState(data.email);
   const [ username, setUsername ] = useState(data.userName);
   const [ gender, setGender ] = useState(data.gender);
   const [ sexualOrientation, setSexualOrientation ] = useState(data.sexualOrientation);
   const [ bio, setBio ] = useState(data.bio);
   const [ interests, setInterests ] = useState(data.interests);
-  const [ password, setPassword ] = useState('************');
-  const [ confirmPassword, setConfirmPassword ] = useState('************');
   const [ errorMsg, setErrorMsg ] = useState('');
   const [ loading, setLoading ] = useState(false);
 
@@ -115,23 +112,6 @@ export default () => {
           value={name}
           onChange={(e) => {
             setName(e.target.value)
-          }}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="email"
-          label="Email Address"
-          name="email"
-          autoComplete="email"
-          autoFocus
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value)
           }}
         />
       </Grid>
@@ -235,40 +215,6 @@ export default () => {
           }}
         />
       </Grid>
-      <Grid item xs={12}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          name="password"
-          label="Password"
-          type="password"
-          id="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value)
-          }}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          name="confirmPassword"
-          label="Confirm Password"
-          type="password"
-          id="confirmPassword"
-          autoComplete="confirm-current-password"
-          value={confirmPassword}
-          onChange={(e) => {
-            setConfirmPassword(e.target.value)
-          }}
-        />
-      </Grid>
       <Button
         type="submit"
         fullWidth
@@ -278,22 +224,15 @@ export default () => {
         disabled={loading}
         onClick={async () => {
           setErrorMsg('');
-          if (!firstName || !name || !email || !username || !password || !confirmPassword) {
+          if (!firstName || !name || !username) {
             setErrorMsg('Fill all the inputs');
             return ;
-          }
-
-          if (password !== confirmPassword) {
-            setErrorMsg('The two passwords are not the same');
-            return;
           }
 
           setLoading(true);
           try {
             await sdk.user.update({
-              email,
               username,
-              password,
               first_name: firstName,
               name,
               gender,
