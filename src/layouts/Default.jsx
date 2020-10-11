@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -31,9 +32,10 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import YouNeedToBeConnected from '../components/YouNeedToBeConnected';
 import { fetchUserProfile } from '../store/src/user';
 
-export const mainListItems = (
-  <div>
-    <ListItem button>
+export const MainListItems = () => {
+  const history = useHistory();
+  return <div>
+    <ListItem button onClick={() => history.push('/')}>
       <ListItemIcon>
         <DashboardIcon/>
       </ListItemIcon>
@@ -58,12 +60,13 @@ export const mainListItems = (
       <ListItemText primary="Chat"/>
     </ListItem>
   </div>
-);
+};
 
-export const secondaryListItems = (
-  <div>
+export const SecondaryListItems = () => {
+  const history = useHistory();
+  return <div>
     <ListSubheader inset>Paramètres</ListSubheader>
-    <ListItem button>
+    <ListItem button onClick={() => history.push('/profile')}>
       <ListItemIcon>
         <AccountBoxIcon/>
       </ListItemIcon>
@@ -76,7 +79,7 @@ export const secondaryListItems = (
       <ListItemText primary="Déconnection"/>
     </ListItem>
   </div>
-);
+};
 
 const drawerWidth = 240;
 
@@ -218,9 +221,13 @@ export default ({ children }) => {
           </IconButton>
         </div>
         <Divider/>
-        <List>{mainListItems}</List>
+        <List>
+          <MainListItems />
+        </List>
         <Divider/>
-        <List>{secondaryListItems}</List>
+        <List>
+          <SecondaryListItems />
+        </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
