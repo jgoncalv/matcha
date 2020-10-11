@@ -22,7 +22,7 @@ exports.login = async (req, res) => {
 
     const token = await createJWT({ username });
 
-    res.json({ token });
+    res.json({ token, username });
   } catch (e) {
     consola.error(e);
     res.status(400).send();
