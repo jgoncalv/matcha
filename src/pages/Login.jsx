@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { unwrapResult } from '@reduxjs/toolkit';
 import { Link, useHistory } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,8 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
-import sdk from '../sdk';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { userLogin } from '../store/src/user'
 
 const useStyles = makeStyles((theme) => ({
   submit: {
@@ -30,10 +32,34 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
   const classes = useStyles();
   const history = useHistory();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+
+  const onSubmitClick = async () => {
+    setErrorMsg('');
+    if (loading) {
+      return;
+    }
+    if (!username || !password) {
+      setErrorMsg('Please fill the inputs');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await dispatch(userLogin({ username, password }));
+      unwrapResult(res);
+      setLoading(false);
+      history.push('/');
+    } catch (e) {
+      setErrorMsg('The username and the password is/are incorrect or doesn\'t match.');
+      setLoading(false);
+    }
+  }
 
   return <div className={classes.paper}>
     <Avatar className={classes.avatar}>
@@ -83,24 +109,7 @@ export default () => {
         variant="contained"
         color="primary"
         className={classes.submit}
-        onClick={async () => {
-          setErrorMsg('');
-          if (!username || !password) {
-            setErrorMsg('Please fill the inputs');
-            return;
-          }
-
-          setLoading(true);
-          try {
-            const {data: token } = await sdk.auth.login({ username, password });
-            sdk.setToken(token);
-            history.push('/');
-            setLoading(false);
-          } catch (e) {
-            setErrorMsg('The username and the password is/are incorrect or doesn\'t match.');
-            setLoading(false);
-          }
-        }}
+        onClick={onSubmitClick}
       >
         {
           loading ?
