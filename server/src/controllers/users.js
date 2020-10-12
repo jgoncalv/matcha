@@ -126,7 +126,7 @@ exports.addUserInterest = async (req, res) => {
 /**
  * @param {string} req.params.username
  * @param {string} req.user.username
- * @param {('male' | 'female')} [req.body.gender]
+ * @param {('man' | 'woman')} [req.body.gender]
  * @param {('hetero' | 'homo')} [req.body.sexual_orientation]
  * @param {string} [req.body.biography]
  * @param {string} [req.body.email]
