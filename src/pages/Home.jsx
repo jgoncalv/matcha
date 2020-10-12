@@ -4,6 +4,8 @@ import { Grid } from '@material-ui/core';
 export default () => {
 
   return <Grid container>
-    toto
+    Bienvenue
+    Ils vous ont consultés
+    Ils vous ont likés
   </Grid>
 };

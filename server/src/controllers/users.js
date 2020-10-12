@@ -122,3 +122,40 @@ exports.addUserInterest = async (req, res) => {
     res.status(400).send();
   }
 };
+
+/**
+ * @param {string} req.params.username
+ * @param {string} req.user.username
+ * @param {('male' | 'female')} [req.body.gender]
+ * @param {('hetero' | 'homo')} [req.body.sexual_orientation]
+ * @param {string} [req.body.biography]
+ * @param {string} [req.body.email]
+ * @param {string} [req.body.first_name]
+ * @param {string} [req.body.name]
+ * @param res
+ * @returns {Promise<void>}
+ */
+exports.updateUserProfile = async (req, res) => {
+  const { username } = req.params;
+  const _username = req.user.username;
+  const {gender, sexual_orientation, biography, email, first_name, name} = req.body;
+
+  if (username !== _username) {
+    res.status(404).send();
+    return;
+  }
+
+  try {
+    const obj = {gender, sexual_orientation, biography, email, first_name, name};
+    Object.keys.forEach(key => obj[key] === undefined && delete obj[key]);
+    await knex('users')
+      .where({username})
+      .update(obj)
+
+    res.status(200).send();
+  } catch (e) {
+    consola.error(e);
+    res.status(400).send();
+  }
+
+}

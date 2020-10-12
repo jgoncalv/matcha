@@ -1,11 +1,11 @@
 exports.up = function (knex) {
   return knex.schema.table('users', (table) => {
-    table.integer('score').unsigned().defaultTo(0);
+    table.enu('sexual_orientation', ['hetero', 'homo']);
   });
 };
 
 exports.down = function (knex) {
   return knex.schema.table('users', function(table) {
-    table.dropColumn('score');
+    table.dropColumn('sexual_orientation');
   })
 };
