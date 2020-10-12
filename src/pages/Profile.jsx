@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -8,10 +9,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
-
-import sdk from '../sdk';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import sdk from '../sdk';
 import data from '../data.json'
 
 const useStyles = makeStyles((theme) => ({
@@ -40,9 +40,6 @@ const genders = [
   {
     value: 'other',
   },
-  {
-    value: undefined,
-  }
 ];
 
 const sexualOrientations = [
@@ -55,17 +52,14 @@ const sexualOrientations = [
   {
     value: 'other',
   },
-  {
-    value: undefined,
-  }
 ];
 
 export default () => {
   const classes = useStyles();
   const history = useHistory();
+  const username = useSelector(state => state.user.username);
   const [ firstName, setFirstName ] = useState(data.firstName);
   const [ name, setName ] = useState(data.name);
-  const [ username, setUsername ] = useState(data.userName);
   const [ gender, setGender ] = useState(data.gender);
   const [ sexualOrientation, setSexualOrientation ] = useState(data.sexualOrientation);
   const [ bio, setBio ] = useState(data.bio);
@@ -112,23 +106,6 @@ export default () => {
           value={name}
           onChange={(e) => {
             setName(e.target.value)
-          }}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="username"
-          label="Username"
-          name="username"
-          autoComplete="username"
-          autoFocus
-          value={username}
-          onChange={(e) => {
-            setUsername(e.target.value)
           }}
         />
       </Grid>
@@ -224,15 +201,14 @@ export default () => {
         disabled={loading}
         onClick={async () => {
           setErrorMsg('');
-          if (!firstName || !name || !username) {
+          if (!firstName || !name) {
             setErrorMsg('Fill all the inputs');
             return ;
           }
 
           setLoading(true);
           try {
-            await sdk.user.update({
-              username,
+            await sdk.user.update(username, {
               first_name: firstName,
               name,
               gender,
