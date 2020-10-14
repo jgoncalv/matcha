@@ -159,3 +159,45 @@ exports.updateUserProfile = async (req, res) => {
   }
 
 }
+
+/**
+ * Add a visit and return the newly created visit
+ * @param {Object} req
+ * @param {string} req.params.username - Username passed in the ur
+ * @param {string} req.body.visited_username
+ * @param res
+ * @returns {Promise<void>}
+ */
+exports.addUserVisit = async (req, res) => {
+  const { username } = req.params;
+  const { visited_username } = req.body;
+
+  try {
+    await knex.transaction(async function(trx) {
+      let visit_id;
+      const [data] = await trx('visits')
+        .select(['id'])
+        .where({ username, visited_username })
+        .limit(1);
+
+      if (!data) {
+        const [newVisit] = await trx('visits')
+          .insert({ username, visited_username })
+          .returning(['id'])
+        visit_id = newVisit.id;
+      } else {
+        visit_id = data.id;
+        await knex('visits')
+          .where('id', visit_id)
+          .update('updated_at', Date.now())
+      }
+      await trx('users_visits')
+        .insert({ username, visit_id });
+    })
+
+    res.status(200).send();
+  } catch (e) {
+    consola.error(e);
+    res.status(400).send();
+  }
+};
