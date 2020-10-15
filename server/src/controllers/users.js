@@ -70,8 +70,12 @@ exports.getUserProfil = async (req, res) => {
         .where({ username })
         .limit(1);
 
+      const visitsPromise = trx('users_visits')
+      .select(['username', 'visited_at'])
+      .where('users_visits.visited_username', username)
+      .limit(50);
 
-      const [interests, [profil]] = await Promise.all([interestsPromise, profilPromise]);
+      const [interests, [profil], visits] = await Promise.all([interestsPromise, profilPromise, visitsPromise]);
 
       const [image] = await trx('users_images')
         .select('image_path')
@@ -82,6 +86,7 @@ exports.getUserProfil = async (req, res) => {
         interests,
         ...profil,
         avatar_path: constructImageUrl(image.image_path),
+        visits,
       }
     })
 
@@ -196,19 +201,19 @@ exports.addUserVisit = async (req, res) => {
   try {
     await knex.transaction(async function(trx) {
       let visit_id;
-      const [data] = await trx('visits')
+      const [data] = await trx('user_visits')
         .select(['id'])
         .where({ username, visited_username })
         .limit(1);
 
       if (!data) {
-        const [newVisit] = await trx('visits')
+        const [newVisit] = await trx('user_visits')
           .insert({ username, visited_username })
           .returning(['id'])
         visit_id = newVisit.id;
       } else {
         visit_id = data.id;
-        await knex('visits')
+        await knex('user_visits')
           .where('id', visit_id)
           .update('updated_at', Date.now())
       }
