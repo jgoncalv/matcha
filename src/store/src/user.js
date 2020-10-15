@@ -15,6 +15,7 @@ const initialState = {
   sexualOrientation: '',
   score: 0,
   interests: [],
+  visits: [],
   avatarId: null,
   fetchStatus: 'idle',
   email: '',
@@ -69,6 +70,7 @@ const userSlice = createSlice({
       state.interests = interests;
       state.avatarId = avatar_id;
       state.avatarPath = avatar_path;
+      state.visits = visits;
     },
     [fetchUserProfile.pending]: (state, action) => {
       state.fetchStatus = 'loading';

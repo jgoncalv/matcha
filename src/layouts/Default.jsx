@@ -14,7 +14,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -90,7 +89,7 @@ export const SecondaryListItems = () => {
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
@@ -234,9 +233,7 @@ export default ({ children }) => {
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                {children}
-              </Paper>
+              {children}
             </Grid>
           </Grid>
         </Container>
@@ -244,4 +241,3 @@ export default ({ children }) => {
     </div>
   );
 }
-
