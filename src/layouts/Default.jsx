@@ -64,9 +64,11 @@ export const MainListItems = () => {
 
 export const SecondaryListItems = () => {
   const history = useHistory();
+  const username = useSelector(state => state.user.username);
+
   return <div>
     <ListSubheader inset>Paramètres</ListSubheader>
-    <ListItem button onClick={() => history.push('/profile')}>
+    <ListItem button onClick={() => history.push(`/${username}/profile`)}>
       <ListItemIcon>
         <AccountBoxIcon/>
       </ListItemIcon>

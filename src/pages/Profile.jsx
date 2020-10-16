@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Upload from '../components/Upload'
+import Images from '../components/Images'
 
 import sdk from '../sdk';
 import data from '../data.json'
@@ -27,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
+  },
+  input: {
+    display: 'none',
   },
 }));
 
@@ -230,6 +235,7 @@ export default () => {
           'Update'
         }
       </Button>
+      <Images />
       <Grid item xs={12}>
         {errorMsg}
       </Grid>

@@ -19,7 +19,7 @@ exports.authTokenDecoderMiddleware = function(req, res, next) {
     token = req.headers.cookie.split('=')[1]
   }
 
-  jwt.verify(token, 'toto', (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(400).send()
 
     req.user = decoded

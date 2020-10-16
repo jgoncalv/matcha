@@ -44,7 +44,7 @@ function App() {
             <RouteWrapper exact path="/register" component={Register} layout={Sign} />
             <RouteWrapper exact path="/register/confirm" component={RegisterConfirmation} layout={Sign} />
             <RouteWrapper exact path="/" component={Home} layout={Default} />
-            <RouteWrapper exact path="/profile" component={Profile} layout={Default} />
+            <RouteWrapper exact path="/:username/profile" component={Profile} layout={Default} />
             <RouteWrapper exact path="/settings" component={Settings} layout={Default} />
           </Switch>
         </div>
