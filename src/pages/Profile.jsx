@@ -66,17 +66,13 @@ export default () => {
     </Typography>
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        {
-          profile.avatar_path
-            ? <img className={classes.photoProfile} src={profile.avatar_path} alt="profile-avatar"/>
-            : undefined
-        }
+        <img className={classes.photoProfile} src={profile.avatar_path ?? '/profile-default.png'} alt="profile-avatar"/>
       </Grid>
       {
         isSameUser
           ? (
             <Grid item xs={12}>
-              <Link to={`/${username}/profile/update`} style={{textDecoration: 'none'}}>
+              <Link to={`/profile/${username}/update`} style={{textDecoration: 'none'}}>
                 <Button variant="contained" color="secondary">
                   Modifier
                 </Button>
@@ -96,6 +92,9 @@ export default () => {
       </Grid>
       <Grid item xs={12}>
         <Typography>Gender: {profile.gender ?? '?'}</Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography>Score: {profile.score ?? '?'}</Typography>
       </Grid>
       <Grid item xs={12}>
         <Typography>Sexual orientation: {profile.sexual_orientation ?? '?'}</Typography>

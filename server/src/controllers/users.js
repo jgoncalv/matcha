@@ -165,5 +165,18 @@ exports.updateUserProfile = async (req, res) => {
     consola.error(e);
     res.status(400).send();
   }
+}
 
+exports.searchUsers = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const users = await knex('users')
+      .select()
+      .whereNot({username})
+      .limit(50);
+    res.json({users})
+  } catch (e) {
+    consola.error(e);
+    res.status(400).send();
+  }
 }

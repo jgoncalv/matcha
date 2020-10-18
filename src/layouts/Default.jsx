@@ -44,7 +44,7 @@ export const MainListItems = () => {
       <ListItemIcon>
         <SearchIcon/>
       </ListItemIcon>
-      <ListItemText primary="Recherche"/>
+      <ListItemText primary="Recherche" onClick={() => history.push('/search')} />
     </ListItem>
     <ListItem button>
       <ListItemIcon>
@@ -67,7 +67,7 @@ export const SecondaryListItems = () => {
 
   return <div>
     <ListSubheader inset>Paramètres</ListSubheader>
-    <ListItem button onClick={() => history.push(`/${username}/profile`)}>
+    <ListItem button onClick={() => history.push(`/profile/${username}`)}>
       <ListItemIcon>
         <AccountBoxIcon/>
       </ListItemIcon>

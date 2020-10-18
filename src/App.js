@@ -16,6 +16,7 @@ import ProfileUpdate from './pages/ProfileUpdate';
 import RegisterConfirmation from './pages/RegisterConfirmation';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
+import Search from './pages/Search';
 import sdk from './sdk';
 
 function RouteWrapper({component: Component, layout: Layout, ...rest}) {
@@ -60,9 +61,10 @@ function App() {
             <RouteWrapper exact path="/register" component={Register} layout={Sign} />
             <RouteWrapper exact path="/register/confirm" component={RegisterConfirmation} layout={Sign} />
             <RouteWrapper exact path="/" component={Home} layout={Default} />
-            <RouteWrapper exact path="/:username/profile" component={Profile} layout={Default} />
-            <RouteWrapper exact path={`/${username}/profile/update`} component={ProfileUpdate} layout={Default} />
+            <RouteWrapper exact path="/profile/:username" component={Profile} layout={Default} />
+            <RouteWrapper exact path={`/profile/${username}/update`} component={ProfileUpdate} layout={Default} />
             <RouteWrapper exact path="/settings" component={Settings} layout={Default} />
+            <RouteWrapper exact path="/search" component={Search} layout={Default} />
             <Route exact path="/404" component={NotFound} />
             <Route component={NotFound} />
           </Switch>

@@ -54,3 +54,7 @@ export function removeUserImage(username, id) {
 export function changeAvatar({username, id}) {
   return axios.put(`/user/${username}/images/${id}/avatar`);
 }
+
+export function searchUsers({ username }) {
+  return axios.get(`/user/${username}/search`);
+}
