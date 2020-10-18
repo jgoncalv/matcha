@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useParams, Link, Redirect } from 'react-router-dom';
+
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Upload from '../components/Upload'
-import Images from '../components/Images'
 
+import Images from '../components/Images';
 import sdk from '../sdk';
-import data from '../data.json'
+import Interests from '../components/Interests';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   submit: {
@@ -33,211 +29,83 @@ const useStyles = makeStyles((theme) => ({
   input: {
     display: 'none',
   },
+  photoProfile: {
+    width: '200px',
+    height: '200px',
+    border: '1px solid black',
+    borderRadius: '100%',
+  }
 }));
-
-const genders = [
-  {
-    value: 'male',
-  },
-  {
-    value: 'female',
-  },
-  {
-    value: 'other',
-  },
-];
-
-const sexualOrientations = [
-  {
-    value: 'hetero',
-  },
-  {
-    value: 'homo',
-  },
-  {
-    value: 'other',
-  },
-];
 
 export default () => {
   const classes = useStyles();
-  const history = useHistory();
-  const username = useSelector(state => state.user.username);
-  const [ firstName, setFirstName ] = useState(data.firstName);
-  const [ name, setName ] = useState(data.name);
-  const [ gender, setGender ] = useState(data.gender);
-  const [ sexualOrientation, setSexualOrientation ] = useState(data.sexualOrientation);
-  const [ bio, setBio ] = useState(data.bio);
-  const [ interests, setInterests ] = useState(data.interests);
-  const [ errorMsg, setErrorMsg ] = useState('');
-  const [ loading, setLoading ] = useState(false);
+  const { username } = useParams();
+  const _username = useSelector(state => state.user.username);
+  const [ profile, setProfile ] = useState(null);
+  const [ loading, setLoading ] = useState(true);
+  const isSameUser = username === _username;
+
+  useEffect(() => {
+    setLoading(true);
+    sdk.user.getProfil({ username })
+      .then(({ data }) => setProfile(data))
+      .finally(() => setLoading(false));
+  }, [username]);
+
+  if (loading) {
+    return <CircularProgress color="secondary" />
+  }
+
+  if (!profile) {
+    return <Redirect to="/404" />
+  }
 
   return <div className={classes.paper}>
-    <Avatar className={classes.avatar}>
-      <AccountBoxIcon/>
-    </Avatar>
     <Typography component="h1" variant="h5">
-      Profil
+      Profile
     </Typography>
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="firstName"
-          label="First Name"
-          name="firstName"
-          autoComplete="first-name"
-          autoFocus
-          value={firstName}
-          onChange={(e) => {
-            setFirstName(e.target.value)
-          }}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="lastName"
-          label="Last Name"
-          name="lastName"
-          autoComplete="last-name"
-          autoFocus
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value)
-          }}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          select
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          id="gender"
-          label="Gender"
-          name="gender"
-          autoComplete="gender"
-          autoFocus
-          value={gender}
-          onChange={(e) => {
-            setGender(e.target.value)
-          }}
-        >
-          {genders.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.value}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-      <TextField
-          select
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          id="sexualOrientation"
-          label="Sexual Orientation"
-          name="sexualOrientation"
-          autoComplete="sexual-orientation"
-          autoFocus
-          value={sexualOrientation}
-          onChange={(e) => {
-            setSexualOrientation(e.target.value)
-          }}
-        >
-          {sexualOrientations.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.value}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Grid>
       <Grid item xs={12}>
-        <TextField
-          multiline
-          rows={3}
-          rowsMax={3}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          id="bio"
-          label="Bio"
-          name="bio"
-          autoComplete="bio"
-          autoFocus
-          value={bio}
-          onChange={(e) => {
-            setBio(e.target.value)
-          }}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          multiline
-          rows={2}
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          id="interests"
-          label="Interets"
-          name="interests"
-          autoComplete="interests"
-          autoFocus
-          value={interests}
-          onChange={(e) => {
-            setInterests(e.target.value)
-          }}
-        />
-      </Grid>
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        color="primary"
-        className={classes.submit}
-        disabled={loading}
-        onClick={async () => {
-          setErrorMsg('');
-          if (!firstName || !name) {
-            setErrorMsg('Fill all the inputs');
-            return ;
-          }
-
-          setLoading(true);
-          try {
-            await sdk.user.update(username, {
-              first_name: firstName,
-              name,
-              gender,
-              sexualOrientation,
-              bio,
-              interests
-            });
-            history.push('/dashboard/profil');
-            setLoading(false);
-          } catch (e) {
-            setErrorMsg('We failed to update your information')
-            setLoading(false);
-          }
-        }}
-      >
         {
-          loading ?
-          <CircularProgress color="secondary"/> :
-          'Update'
+          profile.avatar_path
+            ? <img className={classes.photoProfile} src={profile.avatar_path} alt="profile-avatar"/>
+            : undefined
         }
-      </Button>
-      <Images />
+      </Grid>
+      {
+        isSameUser
+          ? (
+            <Grid item xs={12}>
+              <Link to={`/${username}/profile/update`} style={{textDecoration: 'none'}}>
+                <Button variant="contained" color="secondary">
+                  Modifier
+                </Button>
+              </Link>
+            </Grid>
+          )
+          : (
+            <Grid item xs={12}>
+              <Button variant="contained" color="secondary">
+                Like
+              </Button>
+            </Grid>
+          )
+      }
       <Grid item xs={12}>
-        {errorMsg}
+        <Typography>Name: {`${profile.first_name} ${profile.name}`}</Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography>Gender: {profile.gender ?? '?'}</Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography>Sexual orientation: {profile.sexual_orientation ?? '?'}</Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography>Interests:</Typography>
+        <Interests interests={profile.interests} />
+      </Grid>
+      <Grid item xs={12}>
+        <Images username={username} />
       </Grid>
     </Grid>
   </div>;

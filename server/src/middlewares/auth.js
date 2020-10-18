@@ -3,8 +3,6 @@ const jwt = require('jsonwebtoken')
 exports.authTokenDecoderMiddleware = function(req, res, next) {
   let token
 
-  if (!token) return next();
-
   if (
     req.headers.authorization &&
     req.headers.authorization.split(' ')[0] === 'Bearer'
@@ -18,6 +16,8 @@ exports.authTokenDecoderMiddleware = function(req, res, next) {
   ) {
     token = req.headers.cookie.split('=')[1]
   }
+
+  if (!token) return next();
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(400).send()

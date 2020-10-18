@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import {useParams} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -77,9 +78,8 @@ function AvatarImage({ id }) {
   </IconButton>;
 }
 
-export default function () {
+export default function ({ username, isUpdatable }) {
   const classes = useStyles();
-  const username = useSelector(state => state.user.username);
   const [ fetchingImages, setFetchingImages ] = useState(false);
   const [ images, setImages ] = useState([]);
 
@@ -88,7 +88,7 @@ export default function () {
     sdk.user.getUserImages(username)
       .then(({ data }) => setImages(data.images))
       .finally(() => setFetchingImages(false));
-  }, []);
+  }, [username]);
 
   const onImageRemoved = (id) => {
     setImages(images.filter(image => image.id !== id));
@@ -106,22 +106,31 @@ export default function () {
             <ListSubheader component="div">
               Images
             </ListSubheader>
-            <Upload onUploaded={onUploaded}/>
+            {
+              isUpdatable ?
+              <Upload onUploaded={onUploaded}/>
+              : undefined
+            }
           </Grid>
         </GridListTile>
         {
           fetchingImages ? <CircularProgress/> :
             images.map((image, index) => (
                 <GridListTile key={index}>
-                  <img src={image.image_path}/>
-                  <GridListTileBar
-                    titlePosition="bottom"
-                    actionIcon={<RemoveImage id={image.id} onImageRemoved={onImageRemoved}/>}
-                  />
-                  <GridListTileBar
-                    titlePosition="top"
-                    actionIcon={<AvatarImage id={image.id}/>}
-                  />
+                  <img src={image.image_path} alt={`photo-${index}`} />
+                  {
+                    isUpdatable ? <>
+                      <GridListTileBar
+                        titlePosition="bottom"
+                        actionIcon={<RemoveImage id={image.id} onImageRemoved={onImageRemoved}/>}
+                      />
+                      <GridListTileBar
+                      titlePosition="top"
+                      actionIcon={<AvatarImage id={image.id}/>}
+                      />
+                    </>
+                      : undefined
+                  }
                 </GridListTile>
               ),
             )

@@ -23,7 +23,6 @@ export default ({ onUploaded }) => {
     setUploading(true)
     sdk.user.uploadImage(username, e.target.files[ 0 ])
       .then(({data}) => {
-        console.log(data);
         onUploaded(data.image)
       })
       .catch((e) => {

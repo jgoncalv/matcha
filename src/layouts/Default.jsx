@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,7 +30,6 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import YouNeedToBeConnected from '../components/YouNeedToBeConnected';
-import { fetchUserProfile } from '../store/src/user';
 
 export const MainListItems = () => {
   const history = useHistory();
@@ -172,8 +171,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default ({ children }) => {
   const isConnected = useSelector(state => state.user.isConnected);
-  const username = useSelector(state => state.user.username);
-  const dispatch = useDispatch();
   const classes = useStyles();
   const [ open, setOpen ] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -182,11 +179,6 @@ export default ({ children }) => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  useEffect(() => {
-    if (isConnected) {
-      dispatch(fetchUserProfile({ username }));
-    }
-  }, [ isConnected ]);
 
   if (!isConnected) {
     return <YouNeedToBeConnected/>;
