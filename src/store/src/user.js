@@ -15,6 +15,9 @@ const initialState = {
   sexualOrientation: '',
   score: 0,
   interests: [],
+  avatarId: null,
+  fetchStatus: 'idle',
+  email: '',
 };
 
 
@@ -25,6 +28,11 @@ export const userLogin = createAsyncThunk('user/login',async (data) => {
 
 export const fetchUserProfile = createAsyncThunk('user/fetchUserProfile',async (data) => {
   const res = await sdk.user.getProfil(data);
+  return res.data;
+})
+
+export const changeUserAvatar = createAsyncThunk('user/changeUserAvatar', async (data) => {
+  const res = await sdk.user.changeAvatar(data)
   return res.data;
 })
 
@@ -51,13 +59,24 @@ const userSlice = createSlice({
       state.username = username;
     },
     [fetchUserProfile.fulfilled]: (state, action) => {
-      const { first_name, biography, interests, name, score } = action.payload;
+      const { first_name, biography, interests, name, score, avatar_id, avatar_path } = action.payload;
 
+      state.fetchStatus = 'succeeded';
       state.firstName = first_name;
       state.biography = biography;
       state.name = name;
       state.score = score;
       state.interests = interests;
+      state.avatarId = avatar_id;
+      state.avatarPath = avatar_path;
+    },
+    [fetchUserProfile.pending]: (state, action) => {
+      state.fetchStatus = 'loading';
+    },
+    [changeUserAvatar.fulfilled]: (state, action) => {
+      const { avatar } = action.payload;
+      state.avatarId = avatar.avatar_id;
+      state.avatarPath = avatar.avatar_path;
     }
   }
 });

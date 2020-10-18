@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const knex = require('../database');
 const { createJWT } = require('../helpers/token');
+const { constructImageUrl } = require('./images');
 
 exports.login = async (req, res) => {
   const { username, password } = req.body;
@@ -65,15 +66,22 @@ exports.getUserProfil = async (req, res) => {
         .limit(50);
 
       const profilPromise = trx('users')
-        .select(['username', 'name', 'first_name', 'gender', 'biography', 'score'])
+        .select(['username', 'name', 'first_name', 'gender', 'biography', 'score', 'avatar_id'])
         .where({ username })
         .limit(1);
 
+
       const [interests, [profil]] = await Promise.all([interestsPromise, profilPromise]);
+
+      const [image] = await trx('users_images')
+        .select('image_path')
+        .where({username, id: profil.avatar_id})
+        .limit(1);
 
       return {
         interests,
         ...profil,
+        avatar_path: constructImageUrl(image.image_path),
       }
     })
 
@@ -157,7 +165,20 @@ exports.updateUserProfile = async (req, res) => {
     consola.error(e);
     res.status(400).send();
   }
+}
 
+exports.searchUsers = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const users = await knex('users')
+      .select()
+      .whereNot({username})
+      .limit(50);
+    res.json({users})
+  } catch (e) {
+    consola.error(e);
+    res.status(400).send();
+  }
 }
 
 /**

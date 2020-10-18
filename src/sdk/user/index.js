@@ -31,3 +31,30 @@ export function suggestedUsers({ username }) {
 export function update(username, data) {
   return axios.put(`/user/${username}`, data);
 };
+
+export function uploadImage(username, file) {
+  const formData = new FormData();
+  formData.append('img', file);
+
+  return axios.post(`/user/${username}/images`, formData, {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  });
+};
+
+export function getUserImages(username) {
+  return axios.get(`/user/${username}/images`);
+};
+
+export function removeUserImage(username, id) {
+  return axios.delete(`/user/${username}/images/${id}`);
+};
+
+export function changeAvatar({username, id}) {
+  return axios.put(`/user/${username}/images/${id}/avatar`);
+}
+
+export function searchUsers({ username }) {
+  return axios.get(`/user/${username}/search`);
+}

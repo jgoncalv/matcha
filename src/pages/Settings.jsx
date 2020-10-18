@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-
-import sdk from '../sdk';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import data from '../data.json';
 
 const useStyles = makeStyles((theme) => ({
   submit: {
@@ -31,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default () => {
   const classes = useStyles();
-  const [ email, setEmail ] = useState(data.email);
+  const _email = useSelector(state => state.user.email);
+  const [ email, setEmail ] = useState(_email);
   const [ errorMsg, setErrorMsg ] = useState('');
   const [ loading, setLoading ] = useState(false);
   const [ showChangePassword, setShowChangePassword ] = useState(false);
