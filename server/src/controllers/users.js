@@ -85,7 +85,7 @@ exports.getUserProfil = async (req, res) => {
       return {
         interests,
         ...profil,
-        avatar_path: constructImageUrl(image.image_path),
+        avatar_path: image && image.image_path && constructImageUrl(image.image_path),
         visits,
       }
     })
