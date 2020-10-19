@@ -3,12 +3,17 @@ exports.up = function (knex) {
     table.increments();
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('visited_at').defaultTo(knex.fn.now());
+    table.string('username').notNullable()
+    table.string('visited_username').notNullable()
+
     table
-      .string('username').notNullable()
+      .foreign('username')
       .references('username')
+      .inTable('users');
     table
-      .string('visited_username').notNullable()
+      .foreign('visited_username')
       .references('username')
+      .inTable('users');
   });
 };
 

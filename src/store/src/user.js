@@ -60,7 +60,7 @@ const userSlice = createSlice({
       state.username = username;
     },
     [fetchUserProfile.fulfilled]: (state, action) => {
-      const { first_name, biography, interests, name, score, avatar_id, avatar_path } = action.payload;
+      const { first_name, biography, interests, name, score, visits, avatar_id, avatar_path } = action.payload;
 
       state.fetchStatus = 'succeeded';
       state.firstName = first_name;
