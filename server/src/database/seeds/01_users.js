@@ -7,15 +7,17 @@ function createPwdHash(pwd) {
   return bcrypt.hashSync(pwd, salt)
 }
 
+var users = []
+
+for (var x = 0; x < 50; x++) {
+  users[x] = {username: 'username' + x, email: 'user' + x + '@yopmail.com',  name: 'name' + x, first_name : 'first_name' + x, password: createPwdHash("password" + x), confirmed_email: true };
+}
+
 exports.seed = function(knex) {
   // Deletes ALL existing entries
   return knex('users').del()
     .then(function () {
       // Inserts seed entries
-      return knex('users').insert([
-        {username: 'username2', email: 'user2@yopmail.com',  name: 'name2', first_name : 'first_name2', password: createPwdHash("password2"), confirmed_email: true },
-        {username: 'username3', email: 'user3@yopmail.com',  name: 'name3', first_name : 'first_name3', password: createPwdHash("password3"), confirmed_email: true },
-        {username: 'username4', email: 'user4@yopmail.com',  name: 'name4', first_name : 'first_name4', password: createPwdHash("password4"), confirmed_email: true },
-      ]);
+      return knex('users').insert(users);
     });
 };
