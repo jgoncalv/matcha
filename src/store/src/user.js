@@ -19,6 +19,7 @@ const initialState = {
   avatarId: null,
   fetchStatus: 'idle',
   email: '',
+  likes: [],
 };
 
 
@@ -60,7 +61,7 @@ const userSlice = createSlice({
       state.username = username;
     },
     [fetchUserProfile.fulfilled]: (state, action) => {
-      const { first_name, biography, interests, name, score, visits, avatar_id, avatar_path } = action.payload;
+      const { first_name, biography, interests, name, score, visits, avatar_id, avatar_path, likes } = action.payload;
 
       state.fetchStatus = 'succeeded';
       state.firstName = first_name;
@@ -71,6 +72,7 @@ const userSlice = createSlice({
       state.avatarId = avatar_id;
       state.avatarPath = avatar_path;
       state.visits = visits;
+      state.likes = likes;
     },
     [fetchUserProfile.pending]: (state, action) => {
       state.fetchStatus = 'loading';
