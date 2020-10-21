@@ -6,6 +6,8 @@ router.use('/interests', require('./interests'));
 router.use('/images', require('./images'));
 router.use('/search', require('./search'));
 router.use('/visits', require('./visits'));
+router.use('/report', require('./report'));
+router.use('/block', require('./block'));
 
 router.route('/')
   .get(getUserProfil)
