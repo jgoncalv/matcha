@@ -58,3 +58,11 @@ export function changeAvatar({username, id}) {
 export function searchUsers({ username }) {
   return axios.get(`/user/${username}/search`);
 }
+
+export function getLikes({ username, number }) {
+  return axios.get(`/user/${username}/likes?page=${number}`);
+}
+
+export function getVisits({ username, number }) {
+  return axios.get(`/user/${username}/visits?page=${number}`);
+}

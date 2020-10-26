@@ -1,18 +1,18 @@
-import React from 'react';
-import Link from '@material-ui/core/Link';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Pagination from '@material-ui/lab/Pagination';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 import { Title } from './Home'
-import { useSelector } from 'react-redux';
-
-function preventDefault(event) {
-  event.preventDefault();
-}
+import sdk from '../sdk';
 
 const useStyles = makeStyles((theme) => ({
   seeMore: {
@@ -22,7 +22,32 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Likes() {
   const classes = useStyles();
-  const likes = useSelector(state => state.user.likes);
+  const username = useSelector(state => state.user.username);
+
+  const [ loading, setLoading ] = useState(true);
+  const [ likes, setLikes ] = useState([]);
+  const [ pageNumber, setPageNumber ] = useState([]);
+
+  var number = 1
+  useEffect(() => {
+    setLoading(true);
+    sdk.user.getLikes({username, number})
+      .then(({data}) => {
+        if (data.likes) {
+          setLikes(data.likes);
+          setPageNumber(data.number_of_pages);
+        } else {
+          setLikes([]);
+          setPageNumber(1);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [username]);
+
+  if (loading) {
+    return <CircularProgress color="secondary" />
+  }
+
   return (
     <React.Fragment>
       <Title>Ils vous ont likés</Title>
@@ -43,9 +68,7 @@ export default function Likes() {
         </TableBody>
       </Table>
       <div className={classes.seeMore}>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          See more likes
-        </Link>
+        <Pagination count={pageNumber} color="primary" onChange={(e) => {console.log(e.target)}}/>
       </div>
     </React.Fragment>
   );

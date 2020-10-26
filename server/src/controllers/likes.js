@@ -50,3 +50,32 @@ exports.like = async (req, res) => {
     res.status(400).send();
   }
 };
+
+exports.getLikes = async (req, res) => {
+  const { username } = req.user;
+  const page = req.query.page - 1; // on n'accepte pas la page 0
+  const maxNumberReturn = 10;
+
+  try {
+    const likesPromise = knex('likes')
+      .select(['id', 'username', 'created_at'])
+      .where({username_liked: username})
+      .offset(page * maxNumberReturn)
+      .limit(maxNumberReturn)
+      .orderBy('created_at');
+
+    const totalPromise = knex('likes')
+      .where({ username_liked: username })
+      .count();
+
+
+    var [likes, total] = await Promise.all([likesPromise, totalPromise])
+
+    total = total[0].count
+
+    res.json({ likes, total, number_of_pages: Math.ceil(total / maxNumberReturn) });
+  } catch (e) {
+    consola.error(e);
+    res.status(400).send();
+  }
+};
