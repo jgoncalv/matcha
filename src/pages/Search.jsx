@@ -109,8 +109,14 @@ export default () => {
                     </CardContent>
                   </CardActionArea>
                   <CardActions>
-                    <Button size="small" color="secondary">
+                    <Button size="small" color="primary">
                       Like
+                    </Button>
+                    <Button size="small" color="secondary">
+                      Report
+                    </Button>
+                    <Button size="small" color="black">
+                      Block
                     </Button>
                   </CardActions>
                 </Card>
