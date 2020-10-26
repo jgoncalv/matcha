@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 
 import Visits from './Visits';
+import Likes from './Likes';
 
 export function Title(props) {
   return (
@@ -53,7 +54,7 @@ export default () => {
 
       <Grid item xs={12} md={6}>
         <Paper className={classes.paper}>
-          <Title>Ils vous ont likés</Title>
+          <Likes/>
         </Paper>
       </Grid>
   </Grid>

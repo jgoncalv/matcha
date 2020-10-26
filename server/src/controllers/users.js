@@ -75,7 +75,12 @@ exports.getUserProfil = async (req, res) => {
       .where('users_visits.visited_username', username)
       .limit(50);
 
-      const [interests, [profil], visits] = await Promise.all([interestsPromise, profilPromise, visitsPromise]);
+      const likesPromise = trx('likes')
+      .select(['id', 'username', 'created_at'])
+      .where('likes.username_liked', username)
+      .limit(50);
+
+      const [interests, [profil], visits, likes] = await Promise.all([interestsPromise, profilPromise, visitsPromise, likesPromise]);
 
       const [image] = await trx('users_images')
         .select('image_path')
@@ -87,6 +92,7 @@ exports.getUserProfil = async (req, res) => {
         ...profil,
         avatar_path: image && image.image_path && constructImageUrl(image.image_path),
         visits,
+        likes,
       }
     })
 
@@ -185,45 +191,3 @@ exports.searchUsers = async (req, res) => {
     res.status(400).send();
   }
 }
-
-/**
- * Add a visit and return the newly created visit
- * @param {Object} req
- * @param {string} req.params.username - Username passed in the ur
- * @param {string} req.body.visited_username
- * @param res
- * @returns {Promise<void>}
- */
-exports.addUserVisit = async (req, res) => {
-  const { username } = req.params;
-  const { visited_username } = req.body;
-
-  try {
-    await knex.transaction(async function(trx) {
-      let visit_id;
-      const [data] = await trx('users_visits')
-        .select(['id'])
-        .where({ username, visited_username })
-        .limit(1);
-
-      if (!data) {
-        const [newVisit] = await trx('users_visits')
-          .insert({ username, visited_username })
-          .returning(['id'])
-        visit_id = newVisit.id;
-      } else {
-        visit_id = data.id;
-        await knex('users_visits')
-          .where('id', visit_id)
-          .update('updated_at', Date.now())
-      }
-      await trx('users_visits')
-        .insert({ username, visit_id });
-    })
-
-    res.status(200).send();
-  } catch (e) {
-    consola.error(e);
-    res.status(400).send();
-  }
-};

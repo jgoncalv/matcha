@@ -20,24 +20,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Visits() {
+export default function Likes() {
   const classes = useStyles();
   const username = useSelector(state => state.user.username);
 
   const [ loading, setLoading ] = useState(true);
-  const [ visits, setVisits ] = useState([]);
+  const [ likes, setLikes ] = useState([]);
   const [ pageNumber, setPageNumber ] = useState([]);
 
   var number = 1
   useEffect(() => {
     setLoading(true);
-    sdk.user.getVisits({username, number})
+    sdk.user.getLikes({username, number})
       .then(({data}) => {
-        if (data.visits) {
-          setVisits(data.visits);
+        if (data.likes) {
+          setLikes(data.likes);
           setPageNumber(data.number_of_pages);
         } else {
-          setVisits([]);
+          setLikes([]);
           setPageNumber(1);
         }
       })
@@ -50,7 +50,7 @@ export default function Visits() {
 
   return (
     <React.Fragment>
-      <Title>Ils vous ont consultés</Title>
+      <Title>Ils vous ont likés</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -59,9 +59,9 @@ export default function Visits() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {visits.map((row) => (
+          {likes.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{row.visited_at}</TableCell>
+              <TableCell>{row.created_at}</TableCell>
               <TableCell>{row.username}</TableCell>
             </TableRow>
           ))}
