@@ -66,3 +66,15 @@ export function getLikes({ username, number }) {
 export function getVisits({ username, number }) {
   return axios.get(`/user/${username}/visits?page=${number}`);
 }
+
+export function like(username, data) {
+  return axios.post(`/user/${username}/likes`, data);
+}
+
+export function report(username, data) {
+  return axios.post(`/user/${username}/reports`, data);
+}
+
+export function block(username, data) {
+  return axios.post(`/user/${username}/blocks`, data);
+}

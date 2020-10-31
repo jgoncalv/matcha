@@ -11,29 +11,23 @@ const knex = require('../database');
  * @returns {Promise<void>}
  */
 exports.report = async (req, res) => {
-  const username_reported = req.params.username;
-  const { username } = req.user;
-  const { report } = req.body;
+  const { username } = req.params;
+  const { username_reported, report } = req.body;
 
   try {
     if (report) {
-
-      await knex.transaction(async function (trx) {
-        await trx('reports')
-          .insert({
-            username,
-            username_reported,
-          });
-      });
-    } else {
-      await knex.transaction(async function(trx) {
-        await trx('reports')
-        .where({
+      await knex('reports')
+        .insert({
           username,
           username_reported,
-        })
-        .del();
+        });
+    } else {
+      await knex('reports')
+      .where({
+        username,
+        username_reported,
       })
+      .del();
     }
 
     res.status(200).send();

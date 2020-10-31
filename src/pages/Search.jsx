@@ -63,6 +63,7 @@ export default () => {
   const username = useSelector(state => state.user.username);
   const [ loading, setLoading ] = useState(true);
   const [ suggestions, setSuggestions ] = useState([]);
+  const [ errorMsg, setErrorMsg ] = useState('');
 
   useEffect(() => {
     setLoading(true);
@@ -86,6 +87,7 @@ export default () => {
     <Typography component="h1" variant="h5">
       Recherche
     </Typography>
+    {errorMsg}
     <GridList cellHeight={600}>
       {
         suggestions.length
@@ -109,14 +111,83 @@ export default () => {
                     </CardContent>
                   </CardActionArea>
                   <CardActions>
-                    <Button size="small" color="primary">
-                      Like
+                    <Button
+                      type="submit"
+                      color="primary"
+                      className={classes.submit}
+                      disabled={loading}
+                      onClick={async () => {
+                        setErrorMsg('');
+                        setLoading(true);
+                        try {
+                          await sdk.user.like(username, {
+                            username_liked: suggestion.username,
+                            like: true
+                          });
+                          setLoading(false);
+                        } catch (e) {
+                          setErrorMsg('Like failed')
+                          setLoading(false);
+                        }
+                      }}
+                    >
+                      {
+                        loading ?
+                        <CircularProgress color="secondary"/> :
+                        'Like'
+                      }
                     </Button>
-                    <Button size="small" color="secondary">
-                      Report
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      className={classes.submit}
+                      disabled={loading}
+                      onClick={async () => {
+                        setErrorMsg('');
+                        setLoading(true);
+                        try {
+                          await sdk.user.report(username, {
+                            username_reported: suggestion.username,
+                            report: true
+                          });
+                          setLoading(false);
+                        } catch (e) {
+                          setErrorMsg('Report failed')
+                          setLoading(false);
+                        }
+                      }}
+                    >
+                      {
+                        loading ?
+                        <CircularProgress color="secondary"/> :
+                        'Report'
+                      }
                     </Button>
-                    <Button size="small" color="black">
-                      Block
+                    <Button
+                      type="submit"
+                      color="black"
+                      className={classes.submit}
+                      disabled={loading}
+                      onClick={async () => {
+                        setErrorMsg('');
+                        setLoading(true);
+                        try {
+                          await sdk.user.block(username, {
+                            username_blocked: suggestion.username,
+                            block: true
+                          });
+                          setLoading(false);
+                        } catch (e) {
+                          setErrorMsg('Block failed')
+                          setLoading(false);
+                        }
+                      }}
+                    >
+                      {
+                        loading ?
+                        <CircularProgress color="secondary"/> :
+                        'Block'
+                      }
                     </Button>
                   </CardActions>
                 </Card>

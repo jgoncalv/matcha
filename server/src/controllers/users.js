@@ -70,17 +70,7 @@ exports.getUserProfil = async (req, res) => {
         .where({ username })
         .limit(1);
 
-      const visitsPromise = trx('users_visits')
-      .select(['id', 'username', 'visited_at'])
-      .where('users_visits.visited_username', username)
-      .limit(50);
-
-      const likesPromise = trx('likes')
-      .select(['id', 'username', 'created_at'])
-      .where('likes.username_liked', username)
-      .limit(50);
-
-      const [interests, [profil], visits, likes] = await Promise.all([interestsPromise, profilPromise, visitsPromise, likesPromise]);
+      const [interests, [profil]] = await Promise.all([interestsPromise, profilPromise]);
 
       const [image] = await trx('users_images')
         .select('image_path')
@@ -91,8 +81,6 @@ exports.getUserProfil = async (req, res) => {
         interests,
         ...profil,
         avatar_path: image && image.image_path && constructImageUrl(image.image_path),
-        visits,
-        likes,
       }
     })
 

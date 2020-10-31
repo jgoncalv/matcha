@@ -11,29 +11,23 @@ const knex = require('../database');
  * @returns {Promise<void>}
  */
 exports.block = async (req, res) => {
-  const username_blocked = req.params.username;
-  const { username } = req.user;
-  const { block } = req.body;
+  const { username } = req.params;
+  const { username_blocked, block } = req.body;
 
   try {
     if (block) {
-
-      await knex.transaction(async function (trx) {
-        await trx('blocks')
-          .insert({
-            username,
-            username_blocked,
-          });
-      });
-    } else {
-      await knex.transaction(async function(trx) {
-        await trx('blocks')
-        .where({
+      await knex('blocks')
+        .insert({
           username,
           username_blocked,
-        })
-        .del();
+        });
+    } else {
+      await knex('blocks')
+      .where({
+        username,
+        username_blocked,
       })
+      .del();
     }
 
     res.status(200).send();
