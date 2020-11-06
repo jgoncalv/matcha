@@ -12,9 +12,8 @@ const knex = require('../database');
  * @returns {Promise<void>}
  */
 exports.like = async (req, res) => {
-  const username_liked = req.params.username;
-  const { username } = req.user;
-  const { like } = req.body;
+  const { username } = req.params;
+  const { username_liked, like } = req.body;
 
   try {
     if (like) {
